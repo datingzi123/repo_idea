@@ -48,6 +48,7 @@ public interface UserMapper {
     public void test41();
     public void test51();
     public void test61();
+    public void test7881();
     
 }
 
