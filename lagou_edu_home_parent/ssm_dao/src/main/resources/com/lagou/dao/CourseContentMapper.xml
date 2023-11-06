@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lagou.dao.CourseContentMapper">
+
+    <!--手动封装到章节信息CourseSection,以及课时信息CourseLesson-->
+    <resultMap id="SectionAndLessonResultMap" type="com.lagou.domain.CourseSection">
+        <id property="id" column="id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="sectionName" column="section_name"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDe" column="id_de"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+
+        <collection property="lessonList" ofType="com.lagou.domain.CourseLesson">
+            <id property="id" column="lessonId"></id>
+            <result property="courseId" column="course_id"></result>
+            <result property="sectionId" column="section_id"></result>
+            <result property="theme" column="theme"></result>
+            <result property="duration" column="duration"></result>
+            <result property="isFree" column="is_free"></result>
+            <result property="orderNum" column="order_num"></result>
+            <result property="status" column="status"></result>
+        </collection>
+    </resultMap>
+
+    <!--课程内容展示：根据课程id，查询关联的章节信息及章节信息关联的课时信息 一个课程有多个章节，一个章节有多个课时-->
+    <select id="findSectionAndLessonByCourseId" parameterType="int" resultMap="SectionAndLessonResultMap">
+        SELECT
+           cs.* ,
+           cl.id lessonid,
+           cl.course_id,
+           cl.section_id,
+           cl.theme,
+           cl.duration,
+           cl.create_time,
+           cl.update_time,
+           cl.is_del,
+           cl.order_num,
+           cl.status
+        FROM course_section cs LEFT JOIN course_lesson cl
+        ON cl.section_id = cs.id
+        WHERE cs.course_id = #{id}
+        ORDER BY cs.order_num
+    </select>
+
+
+    <!--回显章节对应的课程信息(id courseName)-->
+    <select id="findCourseByCourseId" parameterType="int" resultType="com.lagou.domain.Course">
+        select id,course_name from course where id = #{courseId}
+    </select>
+
+
+    <!--新建保存章节信息-->
+    <insert id="saveSection" parameterType="com.lagou.domain.CourseSection">
+        insert into course_section(
+          course_id,
+          section_name,
+          description,
+          order_num,
+          status,
+          create_time,
+          update_time
+        )values(#{courseId},#{sectionName},#{description},#{orderNum},#{status},#{createTime},#{updateTime})
+    </insert>
+
+
+    <!--修改章节信息 动态sql之if-->
+    <update id="updateSection" parameterType="com.lagou.domain.CourseSection">
+        UPDATE course_section
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="sectionName != null and sectionName != ''">
+                    section_name = #{sectionName},
+                </if>
+                <if test="description != null and description != ''">
+                    description = #{description},
+                </if>
+                <if test="orderNum != null and orderNum != '' or orderNum == 0">
+                    order_num = #{orderNum},
+                </if>
+                <if test="updateTime != null">
+                    update_time=#{updateTime},
+                </if>
+            </trim>
+            <where>
+                <if test="id != null and id != '' ">id = #{id}</if>
+            </where>
+    </update>
+
+    <!--修改章节状态-->
+    <update id="updateSectionStatus" parameterType="com.lagou.domain.CourseSection">
+        update course_section set status = #{status},update_time = #{updateTime} where id = #{id}
+    </update>
+
+    <!--新建课时信息-->
+    <insert id="saveLesson" parameterType="com.lagou.domain.CourseLesson">
+        insert into course_lesson(
+           course_id,
+           section_id,
+           theme,
+           duration,
+           create_time,
+           update_time,
+           order_num,
+           status
+        )values(#{courseId},#{sectionId},#{theme},#{duration},#{createTime},#{updateTime},#{orderNum},#{status})
+    </insert>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

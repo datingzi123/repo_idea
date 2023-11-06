@@ -1,0 +1,4 @@
+com\lagou\controller\RoleController.class
+com\lagou\controller\ResourceController.class
+com\lagou\controller\PromotionSpaceController.class
+com\lagou\controller\UserController.class

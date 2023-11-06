@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lagou.dao.MenuMapper">
+
+
+    <resultMap id="menuResult" type="com.lagou.domain.Menu">
+
+        <!--查询出的父子菜单，封装到普通属性-->
+        <id property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="href" column="href"/>
+        <result property="icon" column="icon"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="shown" column="shown"/>
+        <result property="level" column="level"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="updatedTime" column="updated_time"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="updatedBy" column="updated_by"/>
+
+        <!--查询出的子级菜单，封装到submenuList  执行第二条sql也在本配置文件中，所有直接调用即可-->
+        <collection property="submenuList" ofType="com.lagou.domain.Menu" select="findSubMenuListByPid" column="id"/>
+
+    </resultMap>
+
+    <!--查询所有父子菜单信息-->
+    <select id="findSubMenuListByPid" parameterType="int" resultMap="menuResult">
+        select * from menu where parent_id = #{id}
+    </select>
+
+    <!--菜单列表查询-->
+    <select id="findAllMenu" resultType="com.lagou.domain.Menu">
+        select * from menu
+    </select>
+
+    <!--根据id查询菜单-->
+    <select id="findMenuById" parameterType="int" resultType="com.lagou.domain.Menu">
+        select * from menu where id = #{id}
+    </select>
+
+</mapper>

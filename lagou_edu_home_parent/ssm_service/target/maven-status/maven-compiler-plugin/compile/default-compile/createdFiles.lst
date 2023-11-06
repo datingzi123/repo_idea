@@ -1,0 +1,8 @@
+com\lagou\service\impl\ResourceServiceImpl.class
+com\lagou\service\impl\UserServiceImpl.class
+com\lagou\service\PromotionSpaceService.class
+com\lagou\service\ResourceService.class
+com\lagou\service\UserService.class
+com\lagou\service\impl\PromotionSpaceServiceImpl.class
+com\lagou\service\impl\RoleServiceImpl.class
+com\lagou\service\RoleService.class

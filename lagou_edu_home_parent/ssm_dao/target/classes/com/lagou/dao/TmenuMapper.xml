@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lagou.dao.TmenuMapper">
+
+    <resultMap id="tmenuMapper" type="com.lagou.domain.Tmenu">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="pid" column="pid"/>
+
+        <collection property="childs" ofType="com.lagou.domain.Tmenu" select="findTmenuByPid" column="id"/>
+    </resultMap>
+
+    <!--查询父子菜单进行菜单列表展示，权限粒度到菜单末级-->
+    <select id="findTmenuByPid" parameterType="int" resultMap="tmenuMapper">
+        select * from tmenu where pid = #{pid}
+    </select>
+
+
+</mapper>
